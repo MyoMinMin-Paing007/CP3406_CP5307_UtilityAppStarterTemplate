@@ -78,11 +78,10 @@ fun UtilityScreen(viewModel: CurrencyViewModel) {
     val isLoading by viewModel.isLoading.collectAsState()
     val errorMessage by viewModel.errorMessage.collectAsState()
 
-    var amount by remember { mutableStateOf("") }
-    var fromCurrency by remember { mutableStateOf("USD") }
-    var toCurrency by remember { mutableStateOf("SGD") }
-    var result by remember { mutableStateOf<String?>(null) }
+    val fromCurrency by viewModel.baseCurrency.collectAsState()
+    val toCurrency by viewModel.targetCurrency.collectAsState()
 
+    var amount by remember { mutableStateOf("") }
     val currencies = listOf("USD", "SGD", "EUR", "GBP", "JPY", "MMK", "AUD", "MYR")
 
     Column(
@@ -105,14 +104,14 @@ fun UtilityScreen(viewModel: CurrencyViewModel) {
         CurrencyDropdown(
             selected = fromCurrency,
             options = currencies,
-            onSelected = { fromCurrency = it }
+            onSelected = { viewModel.setBaseCurrency(it) }
         )
 
         Text("To", style = MaterialTheme.typography.labelLarge)
         CurrencyDropdown(
             selected = toCurrency,
             options = currencies,
-            onSelected = { toCurrency = it }
+            onSelected = { viewModel.setTargetCurrency(it) }
         )
 
         Button(
@@ -176,7 +175,7 @@ fun CurrencyDropdown(
 
 @Composable
 fun SettingsScreen(viewModel: CurrencyViewModel) {
-    var baseCurrency by remember { mutableStateOf("USD") }
+    val baseCurrency by viewModel.baseCurrency.collectAsState()
     val options = listOf("USD", "SGD", "EUR", "GBP", "MMK")
 
     Column(
@@ -196,8 +195,7 @@ fun SettingsScreen(viewModel: CurrencyViewModel) {
                 RadioButton(
                     selected = baseCurrency == currency,
                     onClick = {
-                        baseCurrency = currency
-                        viewModel.fetchRates(currency)
+                        viewModel.setBaseCurrency(currency)
                     }
                 )
                 Text(currency, modifier = Modifier.padding(start = 8.dp))

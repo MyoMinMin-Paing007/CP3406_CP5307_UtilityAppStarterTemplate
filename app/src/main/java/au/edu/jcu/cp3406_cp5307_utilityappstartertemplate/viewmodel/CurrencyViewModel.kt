@@ -21,6 +21,21 @@ class CurrencyViewModel : ViewModel() {
     private val _errorMessage = MutableStateFlow<String?>(null)
     val errorMessage: StateFlow<String?> = _errorMessage
 
+    private val _baseCurrency = MutableStateFlow("USD")
+    val baseCurrency: StateFlow<String> = _baseCurrency
+
+    private val _targetCurrency = MutableStateFlow("SGD")
+    val targetCurrency: StateFlow<String> = _targetCurrency
+
+    fun setBaseCurrency(currency: String) {
+        _baseCurrency.value = currency
+        fetchRates(currency)
+    }
+
+    fun setTargetCurrency(currency: String) {
+        _targetCurrency.value = currency
+    }
+
     fun fetchRates(baseCurrency: String) {
         viewModelScope.launch {
             _isLoading.value = true
