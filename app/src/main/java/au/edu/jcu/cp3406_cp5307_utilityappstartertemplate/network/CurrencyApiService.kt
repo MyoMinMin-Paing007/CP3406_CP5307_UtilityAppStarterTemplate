@@ -6,8 +6,10 @@ import retrofit2.http.GET
 import retrofit2.http.Path
 
 data class ExchangeRateResponse(
-    val base_code: String,
-    val conversion_rates: Map<String, Double>
+    @com.google.gson.annotations.SerializedName("base_code")
+    val baseCode: String,
+    @com.google.gson.annotations.SerializedName("rates")
+    val rates: Map<String, Double>
 )
 
 interface CurrencyApiService {
